@@ -29,10 +29,45 @@ class Pong extends Phaser.Scene {
         this.load.image("planetaRosa", "./assets/pong/planetas/planetaRosa.png");
         this.load.image("planetaTerra", "./assets/pong/planetas/planetaTerra.png");
         this.load.image("planetaVermelho", "./assets/pong/planetas/planetaVermelho.png");
+        this.load.spritesheet('moeda','./assets/pong/moeda.png', {frameWidth: 66, frameHeight: 57});
     }
+
 
     create(){
         this.add.image(400, 300, "ceu");
+
+        var posicaoMoedaX = Phaser.Math.RND.between(174, 676);
+        var posicaoMoedaY = Phaser.Math.RND.between(50, 550);
+
+        var moeda = this.physics.add.sprite(posicaoMoedaX, posicaoMoedaY, 'moeda');
+
+        // Evento de coletar moedas
+        // this.physics.add.overlap(this.bola, moeda, function(){
+        //     posicaoMoedaX = Phaser.Math.RND.between(174, 676);
+        //     posicaoMoedaY = Phaser.Math.RND.between(50, 550);
+        //     this.moeda.setVisible(false);
+        //     this.moeda.setPosition(posicaoMoedaX, posicaoMoedaY);
+
+        //     if (movimento === "vindo"){
+        //         this.pontosRosa += 1;
+        //         this.placarRosa.setText(this.pontosRosa);
+        //     } else if (movimento === "indo"){
+        //         this.pontosAzul += 1;
+        //         this.placarAzul.setText(this.pontosAzul);
+        //     }
+
+        //         moeda.setVisible(true);
+        //     });
+
+        this.anims.create({
+            key: 'girar',
+            frames: this.anims.generateFrameNumbers('moeda', { start: 0, end: 5}),
+            frameRate: 10, //quantidade de frames em 1 segundo
+            repeat: -1 //-1 indica repetição contínua
+        });
+
+        //poderia usar apenas passarinho.play??
+        moeda.anims.play('girar', true);
 
         this.playerAzul = this.physics.add.sprite(50, 300, "playerAzul").setScale(0.7);
         this.playerRosa = this.physics.add.sprite(750, 300, "playerRosa").setScale(0.7);
@@ -63,10 +98,9 @@ class Pong extends Phaser.Scene {
 
         this.teclado = this.input.keyboard.createCursorKeys();
 
-        this.physics.add.collider(this.bola, this.playerAzul, this.trocarBola, null, this);
-        this.physics.add.collider(this.bola, this.playerRosa, this.trocarBola, null, this);
+        this.physics.add.collider(this.bola, this.playerAzul, this.trocarBolaIndo, null, this);
+        this.physics.add.collider(this.bola, this.playerRosa, this.trocarBolaVindo, null, this);
 
-        
     }
 
     update(){
@@ -86,10 +120,10 @@ class Pong extends Phaser.Scene {
             this.bola.setVelocity(-this.velocidadeX);
         }
 
-        if (this.bola.body.x < this.playerAzul.body.x){
+        if (this.bola.body.x <= 0){
             this.pontuacaoRosa();
         }
-        if (this.bola.body.x > this.playerRosa.body.x){
+        if (this.bola.body.x >= 745){
             this.pontuacaoAzul();
         }
         this.delay = (this.bola.body.velocity.y > 0)? -100 : 100;
@@ -98,9 +132,16 @@ class Pong extends Phaser.Scene {
        
     }
 
-    trocarBola(){
+    trocarBolaIndo(){
         this.aleatorio = Phaser.Math.RND.between(0, 5);
         this.bola.setTexture(this.planetas[this.aleatorio]);
+        var movimento = "indo"
+    }
+
+    trocarBolaVindo(){
+        this.aleatorio = Phaser.Math.RND.between(0, 5);
+        this.bola.setTexture(this.planetas[this.aleatorio]);
+        var movimento = "vindo"
     }
 
     pontuacaoRosa(){
@@ -114,6 +155,8 @@ class Pong extends Phaser.Scene {
     
         if (this.pontosRosa = 5){
             const resultado = "perdeu";
+            this.pontosRosa = 0;
+            this.pontosAzul = 0;
             this.scene.start('GameOver', { resultado: resultado}); // inicia a cena telaCadastro
             this.scene.stop('Pong');
         }
@@ -126,6 +169,14 @@ class Pong extends Phaser.Scene {
         this.bola.setVelocity(this.velocidadeX, this.velocidadeY)
         this.pontosAzul += 1;
         this.placarAzul.setText(this.pontosAzul);
+        }
+
+        if (this.pontosAzul = 5){
+            const resultado = "ganhou";
+            this.pontosRosa = 0;
+            this.pontosAzul = 0;
+            this.scene.start('GameOver', { resultado: resultado}); // inicia a cena telaCadastro
+            this.scene.stop('Pong');
         }
     }
 }
