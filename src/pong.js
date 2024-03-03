@@ -59,6 +59,7 @@ class Pong extends Phaser.Scene {
         //         moeda.setVisible(true);
         //     });
 
+
         this.anims.create({
             key: 'girar',
             frames: this.anims.generateFrameNumbers('moeda', { start: 0, end: 5}),
@@ -151,6 +152,7 @@ class Pong extends Phaser.Scene {
         this.bola.setVelocity(this.velocidadeX, this.velocidadeY)
         this.pontosRosa += 1;
         this.placarRosa.setText(this.pontosRosa);
+        break;
         }
     
         if (this.pontosRosa = 5){
