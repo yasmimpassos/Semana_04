@@ -95,12 +95,7 @@ class Pong extends Phaser.Scene {
         this.delay = (this.bola.body.velocity.y > 0)? -100 : 100;
         this.playerRosa.body.velocity.setTo(this.bola.body.velocity.y + this.delay);
         this.playerRosa.setVelocityX(0);
-        // this.playerRosa.setPositionY(this.bola.setPositionY);
-        // // if(this.bola.blocked.left){
-        // //     console.log(1)
-        // // }
-
-        
+       
     }
 
     trocarBola(){
@@ -118,15 +113,19 @@ class Pong extends Phaser.Scene {
         }
     
         if (this.pontosRosa = 5){
-            this.scene.start('GameOver'); // inicia a cena telaCadastro
+            const resultado = "perdeu";
+            this.scene.start('GameOver', { resultado: resultado}); // inicia a cena telaCadastro
             this.scene.stop('Pong');
         }
     }
+
     pontuacaoAzul(){
+        while(this.pontosAzul < 5){
         this.bola.setPosition(400, 300);
         this.velocidadeY = Phaser.Math.RND.between(-350, 350);
         this.bola.setVelocity(this.velocidadeX, this.velocidadeY)
         this.pontosAzul += 1;
         this.placarAzul.setText(this.pontosAzul);
+        }
     }
 }

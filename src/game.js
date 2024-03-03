@@ -2,7 +2,7 @@ var config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    scene: [Pong,GameOver, TelaInicial],
+    scene: [TelaInicial, Pong, GameOver],
     physics: {
         default: 'arcade',
         arcade: {
