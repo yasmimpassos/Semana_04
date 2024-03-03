@@ -55,7 +55,7 @@ class Pong extends Phaser.Scene {
         this.aleatorio = Phaser.Math.RND.between(0, 5);
 
         this.bola = this.physics.add.sprite(400, 300, this.planetas[this.aleatorio]).setScale(0.5);
-        this.sentido = Phaser.Math.RND.between(-1, 1);
+        this.sentido = (Math.random()> 0.5)?1 :-1;
         this.velocidadeY = Phaser.Math.RND.between(-350, 350);
         this.bola.setVelocity(this.sentido*this.velocidadeX, this.velocidadeY);
         this.bola.setBounce(1);
@@ -92,7 +92,9 @@ class Pong extends Phaser.Scene {
         if (this.bola.body.x > this.playerRosa.body.x){
             this.pontuacaoAzul();
         }
-
+        this.delay = (this.bola.body.velocity.y > 0)? -100 : 100;
+        this.playerRosa.body.velocity.setTo(this.bola.body.velocity.y + this.delay);
+        this.playerRosa.setVelocityX(0);
         // this.playerRosa.setPositionY(this.bola.setPositionY);
         // // if(this.bola.blocked.left){
         // //     console.log(1)
@@ -107,11 +109,18 @@ class Pong extends Phaser.Scene {
     }
 
     pontuacaoRosa(){
+        while(this.pontosRosa < 5){
         this.bola.setPosition(400, 300);
         this.velocidadeY = Phaser.Math.RND.between(-350, 350);
         this.bola.setVelocity(this.velocidadeX, this.velocidadeY)
         this.pontosRosa += 1;
         this.placarRosa.setText(this.pontosRosa);
+        }
+    
+        if (this.pontosRosa = 5){
+            this.scene.start('GameOver'); // inicia a cena telaCadastro
+            this.scene.stop('Pong');
+        }
     }
     pontuacaoAzul(){
         this.bola.setPosition(400, 300);
